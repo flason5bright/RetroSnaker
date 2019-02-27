@@ -23,6 +23,10 @@ namespace RetroSnaker
         public MainWindow()
         {
             InitializeComponent();
+            var vm = new MainWindowViewModel();
+            this.DataContext = vm;
+            var a = new ListBoxItem();
+
         }
     }
 }

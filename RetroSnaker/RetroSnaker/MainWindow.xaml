@@ -5,8 +5,91 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RetroSnaker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="800">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding KeyEventCommand}" Gesture="Right" Key="Right" CommandParameter="Right"></KeyBinding>
+        <KeyBinding Command="{Binding KeyEventCommand}" Gesture="Down" Key="Down" CommandParameter="Down"></KeyBinding>
+        <KeyBinding Command="{Binding KeyEventCommand}" Gesture="Left" Key="Left" CommandParameter="Left"></KeyBinding>
+        <KeyBinding Command="{Binding KeyEventCommand}" Gesture="Up" Key="Up" CommandParameter="Up"></KeyBinding>
+    </Window.InputBindings>
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></local:BoolToVisibilityConverter>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+        <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid Background="DarkSeaGreen"  Margin="1">
+                            <ContentPresenter></ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <Button Height="50" Margin="10" Command="{Binding StartGameCommand}">开始游戏</Button>
+           
+        </StackPanel>
+        <Border Grid.Column="1" BorderThickness="0,1,1,1" BorderBrush="Gray">
+            <!--使用listbox当map,并使用UniformGird 当Panel来布局元素-->
+            <ListBox Name="lstMap" ItemsSource="{Binding Engine.Map}" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Name="node" Background="DarkSeaGreen" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsObstacle}" Value="true" >
+                                <Setter TargetName="node" Property="Background" Value="pink"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsBody}" Value="true" >
+                                <Setter TargetName="node" Property="Background" Value="Azure"></Setter>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsBody}" Value="true"></Condition>
+                                    <Condition Binding="{Binding IsHeader}" Value="true"></Condition>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="node" Property="Background" Value="Moccasin"></Setter>
+                            </MultiDataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding MapWidth}" Rows="{Binding MapHeight}"></UniformGrid>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </Border>
+        <Grid Grid.Column="1" Visibility="{Binding Engine.IsGameOver, Converter={StaticResource ResourceKey=BoolToVisibilityConverter}}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Foreground="Red" Opacity="0.6">Game Over</TextBlock>
+        </Grid>
     </Grid>
 </Window>
