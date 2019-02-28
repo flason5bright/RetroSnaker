@@ -55,11 +55,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoolToVisibilityConverter.cs" />
-    <Compile Include="Direction.cs" />
-    <Compile Include="Extension.cs" />
-    <Compile Include="RelayCommand.cs" />
-    <Compile Include="Snaker.cs" />
+    <Compile Include="Converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Game\Direction.cs" />
+    <Compile Include="Tools\Extension.cs" />
+    <Compile Include="Game\Location.cs" />
+    <Compile Include="Game\Node.cs" />
+    <Compile Include="Tools\RelayCommand.cs" />
+    <Compile Include="Game\Snaker.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,11 +70,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameEngine.cs" />
+    <Compile Include="Game\GameEngine.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles\ListBoxItemStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindowViewModel.cs" />

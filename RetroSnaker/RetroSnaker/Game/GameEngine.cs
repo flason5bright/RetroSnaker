@@ -15,7 +15,16 @@ namespace RetroSnaker
 
         public Snaker Snaker { get; set; }
 
-        private Timer _timer = new Timer();
+        private int _score = 0;
+        public int Score
+        {
+            get { return _score; }
+            set
+            {
+                _score = value;
+                Notify(nameof(Score));
+            }
+        }
 
         public List<Node> Map
         {
@@ -33,6 +42,8 @@ namespace RetroSnaker
             }
         }
 
+        private Timer _timer;
+
         public delegate void GameOverEventHandler();
 
         public event GameOverEventHandler GameOver;
@@ -48,19 +59,26 @@ namespace RetroSnaker
         public GameEngine()
         {
             Snaker = new Snaker(MapWidth, MapHeight);
+            Snaker.LengthAdded += () =>
+            {
+                //长度加1后，生成下一个障碍物
+                SetObstacle();
+                Score++;
+            };
         }
 
         public void StartGame()
         {
             IsGameOver = false;
-
             Snaker.Init();
-            //长度加1后，生成下一个障碍物
-            Snaker.LengthAdded += () => { SetObstacle(); };
-
+            //得分清零
+            Score = 0;
             //生成第一块障碍物
             SetObstacle();
 
+            if (_timer != null)
+                _timer.Stop();
+            _timer = new Timer();
             _timer.Interval = 500;
             _timer.Elapsed += (s, e) =>
             {
